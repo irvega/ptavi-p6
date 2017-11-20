@@ -22,7 +22,8 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
             if ((line.decode('utf-8')).split(' ')[0]) == 'INVITE':
                 self.wfile.write(b'SIP/2.0 100 Trying \r\n')
-
+                self.wfile.write(b'SIP/2.0 180 Ringing \r\n')
+                self.wfile.write(b'SIP/2.0 200 OK  \r\n')
             # Si no hay más líneas salimos del bucle infinito
             if not line:
                 break
