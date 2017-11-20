@@ -13,21 +13,17 @@ if len(sys.argv) != 3:
 # Cliente UDP simple.
 # Dirección IP del servidor.
 LINE = sys.argv[2]
-SERVER = '127.0.0.1'
-SERVER2 = LINE.split('@')[1].split(':')[0]
-print(SERVER2)
-PORT = 6001
+SERVER = LINE.split('@')[1].split(':')[0]
+PORT = int(LINE.split('@')[1].split(':')[1])
 metodo = sys.argv[1]
-# Contenido que vamos a enviar
-
-  
-
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     my_socket.connect((SERVER, PORT))
-
+    
+    if metodo != 'INVITE' and metodo != 'BYE':
+        print('metodo: INVITE or BYE')
     print("Enviando: " + LINE)
     if metodo == 'INVITE':
         my_socket.send(bytes('INVITE sip:' + LINE + ' SIP/2.0\r\n', 'utf-8') 
