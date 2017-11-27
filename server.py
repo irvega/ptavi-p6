@@ -15,9 +15,15 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         line_error = line.split(' ')
         if len(line_error) !=3:
             fail = True
-        if line_error[1] != 'sip:'
-            fail =True
-            
+        if line_error[0] != 'sip:'
+            fail = True
+        if line_error[2] != 'SIP/2.0\r\n\r\n'
+            fail = True
+        if line_error[1].find('@') == -1
+            fail = True
+        if line_error[1].find(':') == -1
+            fail = True
+
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write(b"Hemos recibido tu peticion \r\n")
@@ -29,7 +35,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             method = ((line.decode('utf-8')).split(' ')[0])
             if not line:
                 break
-            #if:
+            if fail == True:
                 self.wfile.write(b'SIP/2.0 400 Bad Request')
             if method == lista[0]:
                 self.wfile.write(b'SIP/2.0 100 Trying \r\n')
