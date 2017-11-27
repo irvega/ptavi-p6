@@ -14,7 +14,6 @@ class EchoHandler(socketserver.DatagramRequestHandler):
     def error(self, line):
         line_error = line.split(' ')
         fail = False
-        print(line_error)
         if len(line_error) !=3:
             fail = True
         if line_error[1][0:4] != 'sip:':
@@ -22,8 +21,6 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         if 'SIP/2.0\r\n\r\n' not in line_error[2]:
             fail = True
         if '@' not in line_error[1]:
-            fail = True
-        if ':' not in line_error[1]:
             fail = True
         return fail 
 
@@ -38,7 +35,9 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             method = ((line.decode('utf-8')).split(' ')[0])
             if not line:
                 break
-            if self.error(line.decode('utf-8')):
+            if method not in lista:
+                self.wfile.write(b'SIP/2.0 405 Method Not Allowed')
+            elif self.error(line.decode('utf-8')):
                 self.wfile.write(b'SIP/2.0 400 Bad Request')
             elif method == lista[0]:
                 self.wfile.write(b'SIP/2.0 100 Trying \r\n')
@@ -50,8 +49,6 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                 aEjecutar = './mp32rtp -i 127.0.0.1 -p 23032 < ' + sys.argv[3]
                 print("Vamos a ejecutar", aEjecutar)
                 os.system(aEjecutar)
-            if method not in lista:
-                self.wfile.write(b'SIP/2.0 405 Method Not Allowed')
             # Si no hay más líneas salimos del bucle infinito
 
 
@@ -59,6 +56,6 @@ if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     if len(sys.argv) != 4:
         sys.exit(' Usage: python3 server.py IP port audio_file')
-    serv = socketserver.UDPServer(('', 6001), EchoHandler)
+    serv = socketserver.UDPServer((sys.argv[1], sys.argv[2]), EchoHandler)
     print("Listening...")
     serv.serve_forever()
