@@ -11,31 +11,32 @@ class EchoHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
     """
-    def error(self,line):
+    def error(self, line):
         line_error = line.split(' ')
         if len(line_error) !=3:
             fail = True
-        if line_error[0] != 'sip:'
+        if line_error[0] != 'sip:':
             fail = True
-        if line_error[2] != 'SIP/2.0\r\n\r\n'
+        if '\r\n\r\n' not in line_error[2]:
             fail = True
-        if line_error[1].find('@') == -1
+        if '@' not in line_error[1]:
             fail = True
-        if line_error[1].find(':') == -1
+        if ':' not in line_error[1]:
             fail = True
+        return fail 
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write(b"Hemos recibido tu peticion \r\n")
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
-            line = self.rfile.read()
+            line = self.rfile.read() 
             lista = ['INVITE', 'BYE', 'ACK']
             print("The client send " + line.decode('utf-8'))
             method = ((line.decode('utf-8')).split(' ')[0])
             if not line:
                 break
-            if fail == True:
+            if self.error(line.decode('utf-8')):
                 self.wfile.write(b'SIP/2.0 400 Bad Request')
             if method == lista[0]:
                 self.wfile.write(b'SIP/2.0 100 Trying \r\n')
