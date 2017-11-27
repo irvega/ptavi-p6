@@ -12,8 +12,12 @@ class EchoHandler(socketserver.DatagramRequestHandler):
     Echo server class
     """
     def error(self,line):
-        line_error = 
-    
+        line_error = line.split(' ')
+        if len(line_error) !=3:
+            fail = True
+        if line_error[1] != 'sip:'
+            fail =True
+            
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write(b"Hemos recibido tu peticion \r\n")
