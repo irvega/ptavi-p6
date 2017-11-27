@@ -13,11 +13,13 @@ class EchoHandler(socketserver.DatagramRequestHandler):
     """
     def error(self, line):
         line_error = line.split(' ')
+        fail = False
+        print(line_error)
         if len(line_error) !=3:
             fail = True
-        if line_error[0] != 'sip:':
+        if line_error[1][0:4] != 'sip:':
             fail = True
-        if '\r\n\r\n' not in line_error[2]:
+        if 'SIP/2.0\r\n\r\n' not in line_error[2]:
             fail = True
         if '@' not in line_error[1]:
             fail = True
@@ -38,7 +40,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                 break
             if self.error(line.decode('utf-8')):
                 self.wfile.write(b'SIP/2.0 400 Bad Request')
-            if method == lista[0]:
+            elif method == lista[0]:
                 self.wfile.write(b'SIP/2.0 100 Trying \r\n')
                 self.wfile.write(b'SIP/2.0 180 Ringing \r\n')
                 self.wfile.write(b'SIP/2.0 200 OK  \r\n')
