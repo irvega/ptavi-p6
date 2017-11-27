@@ -7,6 +7,7 @@ import os
 import socketserver
 import sys
 
+
 class EchoHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
@@ -14,7 +15,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
     def error(self, line):
         line_error = line.split(' ')
         fail = False
-        if len(line_error) !=3:
+        if len(line_error) != 3:
             fail = True
         if line_error[1][0:4] != 'sip:':
             fail = True
@@ -22,14 +23,14 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             fail = True
         if '@' not in line_error[1]:
             fail = True
-        return fail 
+        return fail
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
         self.wfile.write(b"Hemos recibido tu peticion \r\n")
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
-            line = self.rfile.read() 
+            line = self.rfile.read()
             lista = ['INVITE', 'BYE', 'ACK']
             print("The client send " + line.decode('utf-8'))
             method = ((line.decode('utf-8')).split(' ')[0])
@@ -56,6 +57,8 @@ if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     if len(sys.argv) != 4:
         sys.exit(' Usage: python3 server.py IP port audio_file')
-    serv = socketserver.UDPServer((sys.argv[1], sys.argv[2]), EchoHandler)
+    if not os.path.exists(sys.argv[3]):
+        sys.exit('The file doest exist')
+    serv = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])), EchoHandler)
     print("Listening...")
     serv.serve_forever()
