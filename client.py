@@ -34,6 +34,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     data = my_socket.recv(1024)
 
     print('Recibido -- ', data.decode('utf-8'))
+    recive = data.decode('utf-8').split(' ')
+    for element in recive:
+        if element == '200':
+            my_socket.send(bytes('ACK sip:' + LINE.split(':')[0] +
+                                 ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
     print("Terminando socket...")
 
 print("Fin.")
