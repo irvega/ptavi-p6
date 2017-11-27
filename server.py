@@ -50,7 +50,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                 aEjecutar = './mp32rtp -i 127.0.0.1 -p 23032 < ' + sys.argv[3]
                 print("Vamos a ejecutar", aEjecutar)
                 os.system(aEjecutar)
-            elif method not in lista:
+            if method not in lista:
                 self.wfile.write(b'SIP/2.0 405 Method Not Allowed')
             # Si no hay más líneas salimos del bucle infinito
 
