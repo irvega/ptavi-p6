@@ -27,7 +27,6 @@ class EchoHandler(socketserver.DatagramRequestHandler):
 
     def handle(self):
         # Escribe dirección y puerto del cliente (de tupla client_address)
-        self.wfile.write(b"Hemos recibido tu peticion \r\n")
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
@@ -41,9 +40,9 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             elif self.error(line.decode('utf-8')):
                 self.wfile.write(b'SIP/2.0 400 Bad Request')
             elif method == lista[0]:
-                self.wfile.write(b'SIP/2.0 100 Trying \r\n')
-                self.wfile.write(b'SIP/2.0 180 Ringing \r\n')
-                self.wfile.write(b'SIP/2.0 200 OK  \r\n')
+                self.wfile.write(b'SIP/2.0 100 Trying \r\n' +
+                                 b'SIP/2.0 180 Ringing \r\n' +
+                                 b'SIP/2.0 200 OK  \r\n')
             elif method == lista[1]:
                 self.wfile.write(b'SIP/2.0 200 OK  \r\n')
             elif method == lista[2]:
