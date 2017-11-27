@@ -18,20 +18,22 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
-
+            lista = ['INVITE', 'BYE', 'ACK']
             print("The client send " + line.decode('utf-8'))
             method = ((line.decode('utf-8')).split(' ')[0])
-            if method == 'INVITE':
+            if not line:
+                break
+            if method == lista[0]:
                 self.wfile.write(b'SIP/2.0 100 Trying \r\n')
                 self.wfile.write(b'SIP/2.0 180 Ringing \r\n')
                 self.wfile.write(b'SIP/2.0 200 OK  \r\n')
-            if method == 'BYE':
+            elif method == lista[1]:
                 self.wfile.write(b'SIP/2.0 200 OK  \r\n')
-            if method != 'INVITE' and method !='BYE':
+            elif method not in lista:
                 self.wfile.write(b'SIP/2.0 405 Method Not Allowed')
             # Si no hay más líneas salimos del bucle infinito
-            if not line:
-                break
+            else:
+                self.wfile.write(b'SIP/2.0 400 Bad Request')
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
