@@ -15,7 +15,7 @@ if len(sys.argv) != 3:
 LINE = sys.argv[2].split(':')[0]
 IP = sys.argv[2].split('@')[1].split(':')[0]
 PORT = int(sys.argv[2].split('@')[1].split(':')[1])
-metodo = sys.argv[1]
+METODO = sys.argv[1]
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
@@ -23,17 +23,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.connect((IP, PORT))
 
     print("Enviando: " + LINE)
-    if metodo == 'INVITE':
+    if METODO == 'INVITE':
         my_socket.send(bytes('INVITE sip:' + LINE + ' SIP/2.0\r\n', 'utf-8') +
                        b'\r\n')
-    if metodo == 'BYE':
+    if METODO == 'BYE':
         my_socket.send(bytes('BYE sip:' + LINE + ' SIP/2.0\r\n', 'utf-8') +
                        b'\r\n')
-    data = my_socket.recv(1024)
+    DATA = my_socket.recv(1024)
 
     print('Recibido -- ', data.decode('utf-8'))
-    recive = data.decode('utf-8').split(' ')
-    for element in recive:
+    RECIVE = data.decode('utf-8').split(' ')
+    for element in RECIVE:
         if element == '200' and metodo != 'BYE':
             my_socket.send(bytes('ACK sip:' + LINE.split(':')[0] +
                                  ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
