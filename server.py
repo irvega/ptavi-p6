@@ -40,15 +40,15 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             elif self.error(line.decode('utf-8')):
                 self.wfile.write(b'SIP/2.0 400 Bad Request')
             elif method == lista[0]:
-                self.wfile.write(b'SIP/2.0 100 Trying \r\n' +
-                                 b'SIP/2.0 180 Ringing \r\n' +
-                                 b'SIP/2.0 200 OK  \r\n')
+                self.wfile.write(b'SIP/2.0 100 Trying \r\n\r\n' +
+                                 b'SIP/2.0 180 Ringing \r\n\r\n' +
+                                 b'SIP/2.0 200 OK  \r\n\r\n')
             elif method == lista[1]:
                 self.wfile.write(b'SIP/2.0 200 OK  \r\n')
             elif method == lista[2]:
-                aEjecutar = './mp32rtp -i 127.0.0.1 -p 23032 < ' + sys.argv[3]
-                print("Vamos a ejecutar", aEjecutar)
-                os.system(aEjecutar)
+                aejecutar = './mp32rtp -i 127.0.0.1 -p 23032 < ' + sys.argv[3]
+                print("Vamos a ejecutar", aejecutar)
+                os.system(aejecutar)
             # Si no hay más líneas salimos del bucle infinito
 
 
@@ -58,6 +58,6 @@ if __name__ == "__main__":
         sys.exit(' Usage: python3 server.py IP port audio_file')
     if not os.path.exists(sys.argv[3]):
         sys.exit('The file doest exist')
-    serv = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])), EchoHandler)
+    SERV = socketserver.UDPServer((sys.argv[1], int(sys.argv[2])), EchoHandler)
     print("Listening...")
     serv.serve_forever()
